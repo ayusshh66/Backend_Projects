@@ -14,7 +14,7 @@ import {authenticatedMiddleware, ensureAuthentication} from './middleware/auth.m
 
 app.use(express.json());
 
-app.use(authenticatedMiddleware)
+// app.use(authenticatedMiddleware)
 app.use('/admin', adminRouter)
 // const restrictAdmin = restrictRole('ADMIN')
 // it is a global middleware, here the req.user is a global valriable and can be used in other methods
@@ -152,6 +152,7 @@ app.post('/login', async(req,res) => {
         role : existingUser.role,
     }
     const token = jwt.sign(payload, process.env.JWT_SECRET)
+    console.log("NEW TOKEN:", token)
 
     return res.json({status : `success`, token})
     

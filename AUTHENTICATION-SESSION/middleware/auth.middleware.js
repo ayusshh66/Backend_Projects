@@ -6,7 +6,7 @@ export const authenticatedMiddleware = async (req,res,next) => {
         const tokenHeader = req.headers['authorization']
         
         if(!tokenHeader){
-            next()
+           return res.status(401).json({ error: "No token provided" })
         }
         if(!tokenHeader.startsWith('Bearer')){
             return res.status(400).json({message : `the header must be start with "Bearer" `})
@@ -17,11 +17,15 @@ export const authenticatedMiddleware = async (req,res,next) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
         req.user = decoded;
+        console.log("DECODED:", JSON.stringify(decoded))
 
-        next()
+
+        return next()
 
     }catch(err){
-        next()
+                console.log("JWT ERROR:", err.message) 
+
+      return res.status(401).json({ error: "Invalid or expired token" }) // error, not next()
     }
 }
 
@@ -30,12 +34,14 @@ export const ensureAuthentication = async (req,res,next) => {
     if(!user) {
         return res.status(401).json({ error : "you must be authenticated first"})
     }
-    next()
+   return next()
 }
 
 export const restrictRole = (role) => {
     return function (req,res,next) {
-        if(!req.user.role != role){
+        console.log("USER ROLE:", req.user.role)
+        console.log("REQUIRED ROLE:", role)
+        if(req.user.role !== role){
         return res.status(401).json({message : "you are not authorized as admin"})
     }
     return next();
