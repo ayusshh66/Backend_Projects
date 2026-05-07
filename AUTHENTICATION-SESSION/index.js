@@ -3,70 +3,75 @@ const app = express();
 const PORT = process.env.PORT ?? 8001;
 import db from './db/index.js'
 import {usersTable, userSession} from './db/schema.js'
+import adminRouter from './routes/admin.routes.js'
 import { eq } from "drizzle-orm";
 import { randomBytes, createHmac } from "node:crypto";
 import jwt from 'jsonwebtoken'
+import {authenticatedMiddleware, ensureAuthentication} from './middleware/auth.middleware.js'
 // import { useTransition } from "react";
 // import { stat } from "node:fs";
 
+
 app.use(express.json());
 
-
+app.use(authenticatedMiddleware)
+app.use('/admin', adminRouter)
+// const restrictAdmin = restrictRole('ADMIN')
 // it is a global middleware, here the req.user is a global valriable and can be used in other methods
-app.use( async (req,res, next) => {
+// app.use( async (req,res, next) => { 
     
-    try{
-        // const sessionId = req.headers["session-id"];
-    const tokenHeader = req.headers['authorization'];
+//     try{
+//         // const sessionId = req.headers["session-id"];
+//     const tokenHeader = req.headers['authorization'];
 
-    if(!tokenHeader){
-        return  next();
-    }
+//     if(!tokenHeader){
+//         return  next();
+//     }
 
-    if(!tokenHeader.startsWith('Bearer')){
-        return res.status(400).json({error : `token must start with "Bearer"`})
-    }
+//     if(!tokenHeader.startsWith('Bearer')){
+//         return res.status(400).json({error : `token must start with "Bearer"`})
+//     }
 
-    const token = tokenHeader.split(' ')[1];
+//     const token = tokenHeader.split(' ')[1];
 
-    const decode = jwt.verify(token, process.env.JWT_SECRET)
+//     const decode = jwt.verify(token, process.env.JWT_SECRET)
 
 
-    // console.log("1. sessionId from header:", sessionId)
-    //  if(!sessionId){
-    //     return next();
-    //  }
+//     // console.log("1. sessionId from header:", sessionId)
+//     //  if(!sessionId){
+//     //     return next();
+//     //  }
 
-    // const [data] = await db.select({
-    //     sessionId : userSession.id,
-    //     id : usersTable.id,
-    //     email : usersTable.email,
-    //     name : usersTable.name,
-    // }).from(userSession).rightJoin(usersTable, eq(usersTable.id, userSession.userId)).where(eq(userSession.id,sessionId));
-    // console.log("data:", data)
+//     // const [data] = await db.select({
+//     //     sessionId : userSession.id,
+//     //     id : usersTable.id,
+//     //     email : usersTable.email,
+//     //     name : usersTable.name,
+//     // }).from(userSession).rightJoin(usersTable, eq(usersTable.id, userSession.userId)).where(eq(userSession.id,sessionId));
+//     // console.log("data:", data)
 
-    
-
-    //  if(!data || !data.id){
-    //     console.log("3. FAILED - no data or no id")
-    //     return next();
-    //  }
-
-     req.user = decode;
-     console.log("4. SUCCESS - req.user set")
-     next();
-    }catch(err){
-        next();
-    }
-})
-
-app.patch('/', async(req,res) =>{
-const user = req.user
     
 
-    if(!user) {
-        return res.status(400).json({message : `you are not logged in`})
-    }
+//     //  if(!data || !data.id){
+//     //     console.log("3. FAILED - no data or no id")
+//     //     return next();
+//     //  }
+
+//      req.user = decode;
+//      console.log("4. SUCCESS - req.user set")
+//      next();
+//     }catch(err){
+//         next();
+//     }
+// })
+
+app.patch('/',ensureAuthentication, async(req,res) =>{
+// const user = req.user
+    
+
+//     if(!user) {
+//         return res.status(400).json({message : `you are not logged in`})
+//     }
 
     const {name} = req.body;
     console.log(name)
@@ -78,12 +83,12 @@ const user = req.user
 
 
 
-app.get('/', async(req,res) => {
+app.get('/', ensureAuthentication,async(req,res) => {
 
-    const user = req.user;
-    // const sessionId = req.headers["session-id"];
-    // console.log("data:", user); 
-    if(!user) return res.status(401).json({message : `you are not logged in`});
+    // const user = req.user;
+    // // const sessionId = req.headers["session-id"];
+    // // console.log("data:", user); 
+    // if(!user) return res.status(401).json({message : `you are not logged in`});
 
     // const [data] = await db.select({id : userSession.id,
     //     sessionId : userSession.id,
@@ -114,6 +119,7 @@ app.post('/signup', async (req,res) => {
         email,
         password : hashedPassowrd,
         salt,
+        // role : existingUser.role,
 
     }).returning({id : usersTable.id});
 
@@ -125,7 +131,7 @@ app.post('/signup', async (req,res) => {
 
 app.post('/login', async(req,res) => {
     const {email, password} = req.body;
-    const [existingUser] = await db.select({ id : usersTable.id,email : usersTable.email, salt : usersTable.salt, password : usersTable.password}).from(usersTable).where(eq(usersTable.email, email)); //SELECT ALWAYS RETURN AN ARRAY [{},{},]
+    const [existingUser] = await db.select({ id : usersTable.id,email : usersTable.email, salt : usersTable.salt, password : usersTable.password, role : usersTable.role}).from(usersTable).where(eq(usersTable.email, email)); //SELECT ALWAYS RETURN AN ARRAY [{},{},]
     if(!existingUser) return res.status(404).json({error : `there is no user with ${email}`})
     const salt = existingUser.salt;
     const existingHash = existingUser.password;
@@ -143,6 +149,7 @@ app.post('/login', async(req,res) => {
         id : existingUser.id,
         email : existingUser.email,
         name : existingUser.name,
+        role : existingUser.role,
     }
     const token = jwt.sign(payload, process.env.JWT_SECRET)
 
@@ -150,4 +157,6 @@ app.post('/login', async(req,res) => {
     
     
 })
+
+
 app.listen(PORT, () => console.log(`status : server is running on port ${PORT}`))  
