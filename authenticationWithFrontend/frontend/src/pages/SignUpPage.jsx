@@ -11,7 +11,7 @@ function SignUpPage({setUser}) {
         "password" : '',
     })
     const [error, setError] = useState("")
-    const [login, setLogin] = useState(true)
+    
     
     
     
@@ -19,8 +19,10 @@ function SignUpPage({setUser}) {
 
     const handleSubmit = async (e) =>{
         e.preventDefault();
-            console.log('sending:', form)   
-
+         if (!form.email || !form.password) {  // 👈 add this
+        setError('please fill all fields')
+        return
+            }
         try {
             const res = await axios.post('http://localhost:8000/user/signup', form)
             
@@ -35,26 +37,26 @@ function SignUpPage({setUser}) {
     <div className='h-screen w-full flex justify-center items-center '>
         <div className='bg-neutral-300 rounded-lg  w-lg  shadow-2xl shadow-neutral-800 p-5 flex flex-col items-center'>
             <div className='flex gap-4 mt-6  text-2xl'>
-                    <NavLink to='/login' className={({isActive}) => isActive?"font-bold text-black": "text-gray-500"} onClick={()=> setLogin(true)}>LOGIN</NavLink>
-                    <NavLink to='/signup' className={({isActive}) => isActive?"font-bold text-black": "text-gray-500"} onClick={()=> setLogin(false)}>SIGNUP</NavLink>
+                    <NavLink to='/login' className={({isActive}) => isActive?"font-bold text-black": "text-gray-500"} >LOGIN</NavLink>
+                    <NavLink to='/signup' className={({isActive}) => isActive?"font-bold text-black": "text-gray-500"} >SIGNUP</NavLink>
             </div>
                 <form className='flex flex-col items-center h-full gap-12' onSubmit={handleSubmit}>
                     
                     {error && <div className='text-red-500 mb-4'>{error}</div>}
-                    {login?"" : 
+                     
                     <div className='flex justify-center items-center gap-10'>
                         <h1>First Name :</h1>
                         <input type="text" placeholder='john' className='bg-neutral-100 rounded-2xl px-4 py-2 w-70 outline-none'
                                 value={form.firstname} onChange={(e) => setForm({...form, firstname : e.target.value})}/>
                     </div>
-                    }
-                    {login?"" : 
+                    
+                    
                     <div className='flex justify-center items-center gap-10'>
                         <h1>Last Name :</h1>
                         <input type="text" placeholder='martin' className='bg-neutral-100 rounded-2xl px-4 py-2 w-70 outline-none'
                                 value={form.lastname} onChange={(e) => setForm({...form, lastname : e.target.value})}/>
                     </div>
-                    }
+                    
                     <div className='flex justify-center items-center gap-10'>
                         <h1>email :</h1>
                         <input type="email" placeholder='xyz@gmail.com' className='bg-neutral-100 rounded-2xl px-4 py-2 w-70 outline-none'

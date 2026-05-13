@@ -9,16 +9,20 @@ function LoginPage({setUser}) {
         "password" : '',
     })
     const [error, setError] = useState("")
-    const [login, setLogin] = useState(true)
     const navigate = useNavigate();
 
     const handleSubmit = async (e) =>{
         e.preventDefault();
-            console.log('sending:', form)  // 👈 add this
+        if (!form.email || !form.password) {  
+        setError('please fill all fields')
+        return
+            }
 
         try {
             const res = await axios.post('http://localhost:8000/user/login', form)
-            
+            console.log('login response:', res.data) 
+            localStorage.setItem('token', res.data.data.token)  // 
+
             setUser(res.data)
             navigate('/')
         } catch (error) {
@@ -28,14 +32,14 @@ function LoginPage({setUser}) {
     }
   return (
     <div className='h-screen w-full flex justify-center items-center '>
-        <div className='bg-neutral-300 rounded-lg  w-lg h-90 shadow-2xl shadow-neutral-800 flex flex-col items-center gap-10'>
+        <div className='bg-neutral-300 rounded-lg  w-lg shadow-2xl shadow-neutral-800 flex flex-col items-center gap-10 p-5'>
                     <div className='flex gap-4 mt-6  text-2xl'>
                         <NavLink to='/login' className={({isActive}) => isActive?"font-bold text-black": "text-gray-500"} >LOGIN</NavLink>
                         <NavLink to='/signup' className={({isActive}) => isActive?"font-bold text-black": "text-gray-500"} >SIGNUP</NavLink>
                     </div>
                 <form className='flex flex-col items-center h-full gap-12' onSubmit={handleSubmit}>
                     
-                    {error && <div className='text-red-500 mb-4'>{error}</div>}
+                    {error && <div className='text-red-500 '>{error}</div>}
                     <div className='flex justify-center items-center gap-10'>
                         <h1>email :</h1>
                         <input type="email" placeholder='xyz@gmail.com' className='bg-neutral-100 rounded-2xl px-4 py-2 w-70 outline-none'

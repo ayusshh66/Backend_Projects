@@ -67,6 +67,10 @@ router.post('/login', async (req,res) => {
     }})
 })
 
+router.post('/logout', async (req,res) => {
+    return res.status(201).json({message : `you have been logged out`})
+})
+
 router.get('/me', authentication ,async (req,res) => {
     return res.status(200).json( req.user) 
 })
