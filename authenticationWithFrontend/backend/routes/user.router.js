@@ -67,7 +67,7 @@ router.post('/login', async (req,res) => {
     }})
 })
 
-router.get('/me',authentication, async (req,res) => {
+router.get('/me', authentication ,async (req,res) => {
     return res.status(200).json( req.user) 
 })
 
