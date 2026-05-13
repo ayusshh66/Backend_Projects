@@ -9,6 +9,7 @@ function LoginPage({setUser}) {
         "password" : '',
     })
     const [error, setError] = useState("")
+    const [login, setLogin] = useState(true)
     const navigate = useNavigate();
 
     const handleSubmit = async (e) =>{
@@ -27,12 +28,13 @@ function LoginPage({setUser}) {
     }
   return (
     <div className='h-screen w-full flex justify-center items-center '>
-        <div className='bg-neutral-300 rounded-lg  w-lg h-90 shadow-2xl shadow-neutral-800 '>
-                <form className='flex flex-col items-center h-full gap-12' onSubmit={handleSubmit}>
+        <div className='bg-neutral-300 rounded-lg  w-lg h-90 shadow-2xl shadow-neutral-800 flex flex-col items-center gap-10'>
                     <div className='flex gap-4 mt-6  text-2xl'>
-                        <NavLink to='/login' className={({isActive}) => isActive?"font-bold text-black": "text-gray-500"}><div>LOGIN</div></NavLink>
-                        <NavLink to = 'signup' className={({isActive}) => isActive?"font-bold text-black": "text-gray-500"}><div >SIGNUP</div></NavLink>
+                        <NavLink to='/login' className={({isActive}) => isActive?"font-bold text-black": "text-gray-500"} >LOGIN</NavLink>
+                        <NavLink to='/signup' className={({isActive}) => isActive?"font-bold text-black": "text-gray-500"} >SIGNUP</NavLink>
                     </div>
+                <form className='flex flex-col items-center h-full gap-12' onSubmit={handleSubmit}>
+                    
                     {error && <div className='text-red-500 mb-4'>{error}</div>}
                     <div className='flex justify-center items-center gap-10'>
                         <h1>email :</h1>

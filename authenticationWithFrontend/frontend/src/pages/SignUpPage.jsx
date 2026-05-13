@@ -5,15 +5,21 @@ import axios from 'axios'
 
 function SignUpPage({setUser}) {
     const [form, setForm] = useState({
+        "firstname" : "",
+        "lastname" : "",
         "email" : '',
         "password" : '',
     })
     const [error, setError] = useState("")
+    const [login, setLogin] = useState(true)
+    
+    
+    
     const navigate = useNavigate();
 
     const handleSubmit = async (e) =>{
         e.preventDefault();
-            console.log('sending:', form)  
+            console.log('sending:', form)   
 
         try {
             const res = await axios.post('http://localhost:8000/user/signup', form)
@@ -27,13 +33,28 @@ function SignUpPage({setUser}) {
     }
   return (
     <div className='h-screen w-full flex justify-center items-center '>
-        <div className='bg-neutral-300 rounded-lg  w-lg h-90 shadow-2xl shadow-neutral-800 '>
+        <div className='bg-neutral-300 rounded-lg  w-lg  shadow-2xl shadow-neutral-800 p-5 flex flex-col items-center'>
+            <div className='flex gap-4 mt-6  text-2xl'>
+                    <NavLink to='/login' className={({isActive}) => isActive?"font-bold text-black": "text-gray-500"} onClick={()=> setLogin(true)}>LOGIN</NavLink>
+                    <NavLink to='/signup' className={({isActive}) => isActive?"font-bold text-black": "text-gray-500"} onClick={()=> setLogin(false)}>SIGNUP</NavLink>
+            </div>
                 <form className='flex flex-col items-center h-full gap-12' onSubmit={handleSubmit}>
-                    <div className='flex gap-4 mt-6  text-2xl'>
-                        <NavLink to='/login' className={({isActive}) => isActive?"font-bold text-black": "text-gray-500"}><div>LOGIN</div></NavLink>
-                        <NavLink to = 'signup' className={({isActive}) => isActive?"font-bold text-black": "text-gray-500"}><div >SIGNUP</div></NavLink>
-                    </div>
+                    
                     {error && <div className='text-red-500 mb-4'>{error}</div>}
+                    {login?"" : 
+                    <div className='flex justify-center items-center gap-10'>
+                        <h1>First Name :</h1>
+                        <input type="text" placeholder='john' className='bg-neutral-100 rounded-2xl px-4 py-2 w-70 outline-none'
+                                value={form.firstname} onChange={(e) => setForm({...form, firstname : e.target.value})}/>
+                    </div>
+                    }
+                    {login?"" : 
+                    <div className='flex justify-center items-center gap-10'>
+                        <h1>Last Name :</h1>
+                        <input type="text" placeholder='martin' className='bg-neutral-100 rounded-2xl px-4 py-2 w-70 outline-none'
+                                value={form.lastname} onChange={(e) => setForm({...form, lastname : e.target.value})}/>
+                    </div>
+                    }
                     <div className='flex justify-center items-center gap-10'>
                         <h1>email :</h1>
                         <input type="email" placeholder='xyz@gmail.com' className='bg-neutral-100 rounded-2xl px-4 py-2 w-70 outline-none'
@@ -45,7 +66,7 @@ function SignUpPage({setUser}) {
                                 value={form.password} onChange={(e) => setForm({...form, password : e.target.value})}/>
                     </div>
                     <button className='flex justify-center items-center bg-neutral-500 
-                    w-20 h-10 px-4 py-2 rounded-lg  text-white cursor-pointer active:scale-90'>LogIn</button>
+                    w-20 h-10 px-4 py-2 rounded-lg  text-white cursor-pointer active:scale-90'>SignUp</button>
                 </form>
         </div>
     </div>
