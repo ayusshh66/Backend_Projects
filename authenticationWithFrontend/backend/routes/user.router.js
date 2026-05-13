@@ -1,6 +1,7 @@
 import express from 'express'
 import db from '../src/index.js'
 import {usersTable} from '../models/user.model.js'
+import {authentication} from '../middleware/auth.middleware.js';
 import jwt from 'jsonwebtoken'
 import { eq } from 'drizzle-orm'
 import { createHmac, randomBytes } from 'crypto'
@@ -20,7 +21,7 @@ router.post('/signup', async (req,res) => {
     const hashedPassowrd = createHmac('sha256', salt).update(password).digest('hex');
 
     const [user] = await db.insert(usersTable).values({
-        id,
+        
         firstname,
         lastname,
         email,
@@ -45,18 +46,18 @@ router.post('/login', async (req,res) => {
     }
 
     const salt = existingUser.salt;
-    const password = existingUser.password;
+    const oldPassword = existingUser.password;
 
     const newHashedPassowrd = createHmac('sha256', salt).update(password).digest('hex');
 
-    if (newHashedPassowrd !== password){
+    if (newHashedPassowrd !== oldPassword){
         return res.status(400).json({error : `the password is incorrect`})
     }
 
     const payload = {
         id : existingUser.id,
-        email : usersTable.email,
-        name : usersTable.firstname,
+        email : existingUser.email,
+        name : existingUser.firstname,
     }
 
     const token = jwt.sign(payload,process.env.JWT_SECRET);
@@ -64,6 +65,10 @@ router.post('/login', async (req,res) => {
     return res.status(200).json({data : {
         token : token,
     }})
+})
+
+router.get('/me',authentication, async (req,res) => {
+    return res.status(200).json( req.user) 
 })
 
 export default router;

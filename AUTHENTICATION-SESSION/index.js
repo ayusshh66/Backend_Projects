@@ -102,7 +102,6 @@ app.get('/', ensureAuthentication,async(req,res) => {
     // if(!data || !data.userId) return res.status(401).json({message : `you are not logged in`});
 
     res.json({ user })
-
 })
 
 
@@ -124,9 +123,6 @@ app.post('/signup', async (req,res) => {
     }).returning({id : usersTable.id});
 
     return res.status(201).json({status : `success`, data : {userId : user.id}})
-
-
-
 })
 
 app.post('/login', async(req,res) => {
@@ -154,9 +150,7 @@ app.post('/login', async(req,res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET)
     console.log("NEW TOKEN:", token)
 
-    return res.json({status : `success`, token})
-    
-    
+    return res.json({status : `success`, token})  
 })
 
 
