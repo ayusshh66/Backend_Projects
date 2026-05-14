@@ -3,10 +3,11 @@ import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
 import Header from './components/Header'
-import {BrowserRouter, Route,Routes} from 'react-router-dom'
+import {BrowserRouter, Navigate, Route,Routes} from 'react-router-dom'
 import axios from 'axios'
 import './App.css'
 import { useEffect } from 'react'
+import Error from './components/Error'
 
 axios.defaults.withCredentials = true;
 
@@ -26,6 +27,8 @@ function App() {
                     Authorization: `Bearer ${token}`     //  send token
                 }
             })
+            console.log('me response:', res.data)  // 👈 add this
+
             setUser(res.data)
         } catch (err) {
             localStorage.removeItem('token')
@@ -51,7 +54,8 @@ function App() {
         <Routes >
           <Route path='/' element={<HomePage setUser={setUser} user={user} />}/>
           <Route path='/signup' element = {<SignUpPage setUser={setUser}/>}/>
-          <Route path='/login' element = {<LoginPage setUser={setUser}/>}/>
+          <Route path='/login' element = {user?<Navigate to='/' />:<LoginPage setUser={setUser}/>}/>
+          <Route path='*' element = {<Error/>}/>
         </Routes>
       </BrowserRouter>
     </>

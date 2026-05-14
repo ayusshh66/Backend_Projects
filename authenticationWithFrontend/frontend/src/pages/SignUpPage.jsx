@@ -25,8 +25,11 @@ function SignUpPage({setUser}) {
             }
         try {
             const res = await axios.post('http://localhost:8000/user/signup', form)
-            
-            setUser(res.data)
+console.log('signup response:', res.data)  // 👈 add this
+
+            localStorage.setItem('token', res.data.data.token) 
+
+            setUser(res.data.data.user)
             navigate('/')
         } catch (error) {
             console.log('error:', error)

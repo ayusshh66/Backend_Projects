@@ -1,4 +1,5 @@
 import express from 'express'
+import 'dotenv/config'
 import db from '../src/index.js'
 import {usersTable} from '../models/user.model.js'
 import {authentication} from '../middleware/auth.middleware.js';
@@ -22,14 +23,18 @@ router.post('/signup', async (req,res) => {
 
     const [user] = await db.insert(usersTable).values({
         
-        firstname,
+        firstname ,
         lastname,
         email,
         password : hashedPassowrd,
         salt : salt,
     }).returning({id: usersTable.id})
 
-    return res.status(201).json({status : `success`, data : {userId : user.id}})
+    const token = jwt.sign(
+    {id: user.id, email, name: firstname},
+    process.env.JWT_SECRET)
+
+    return res.status(201).json({status : `success`, data : {userId : user.id,  name : firstname, email : email, token : token }})
 })
 
 router.post('/login', async (req,res) => {
@@ -38,7 +43,9 @@ router.post('/login', async (req,res) => {
     const [existingUser] = await db.select({
             id : usersTable.id,
             password : usersTable.password,
-            salt : usersTable.salt
+            salt : usersTable.salt,
+            name :usersTable.firstname,
+            email: usersTable.email,
              }).from(usersTable).where(eq(usersTable.email,email))
     
     if (!existingUser){
@@ -57,7 +64,7 @@ router.post('/login', async (req,res) => {
     const payload = {
         id : existingUser.id,
         email : existingUser.email,
-        name : existingUser.firstname,
+        name : existingUser.name,
     }
 
     const token = jwt.sign(payload,process.env.JWT_SECRET);

@@ -23,7 +23,7 @@ function LoginPage({setUser}) {
             console.log('login response:', res.data) 
             localStorage.setItem('token', res.data.data.token)  // 
 
-            setUser(res.data)
+            // setUser(res.data)
             navigate('/')
         } catch (error) {
             console.log('error:', error)
