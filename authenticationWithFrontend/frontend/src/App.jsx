@@ -47,9 +47,9 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <Header setUser={setUser} user={user}/>
+        <Header />
         <Routes >
-          <Route path='/' element={<HomePage/>}/>
+          <Route path='/' element={<HomePage setUser={setUser} user={user} />}/>
           <Route path='/signup' element = {<SignUpPage setUser={setUser}/>}/>
           <Route path='/login' element = {<LoginPage setUser={setUser}/>}/>
         </Routes>
