@@ -34,7 +34,7 @@ router.post('/signup', async (req,res) => {
     {id: user.id, email, name: firstname},
     process.env.JWT_SECRET)
 
-    return res.status(201).json({status : `success`, data : {userId : user.id,  name : firstname, email : email, token : token }})
+    return res.status(201).json({status : `success`, data : {userId : user.id, token : token , user : { name : firstname, email : email}}})
 })
 
 router.post('/login', async (req,res) => {
@@ -71,6 +71,10 @@ router.post('/login', async (req,res) => {
 
     return res.status(200).json({data : {
         token : token,
+        user : {
+            name : existingUser.name,
+            email : email,
+        }
     }})
 })
 
