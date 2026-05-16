@@ -20,8 +20,10 @@
     "start": "node --watch ./https-server/08http.js"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.3.0",
     "@types/node": "^25.6.0",
     "drizzle-kit": "^0.31.10",
-    "express": "^4.22.2"
+    "express": "^4.22.2",
+    "tailwindcss": "^4.3.0"
   }
 }
