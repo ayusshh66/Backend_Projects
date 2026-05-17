@@ -24,6 +24,7 @@
     "@types/node": "^25.6.0",
     "drizzle-kit": "^0.31.10",
     "express": "^4.22.2",
+    "socket.io-client": "^4.8.3",
     "tailwindcss": "^4.3.0"
   }
 }
