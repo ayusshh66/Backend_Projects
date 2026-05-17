@@ -15,14 +15,16 @@ const io = new Server(server, {
 
 io.on('connection', (socket) => {
   console.log('a user connected', socket.id);
-  socket.on("send_message", (data) => {
-    socket.to(data.room).emit('receive_message',data);
 
-  socket.on("join_room", (data) =>{
+  socket.on("join_room", (data) => {   
     socket.join(data);
-  })  
+    console.log(`joined room: ${data}`)
   })
-});
+
+  socket.on("send_message", (data) => {  
+    socket.to(data.room).emit('receive_message', data);
+  })
+})
 
 app.get('/', async (req,res) =>{
     res.status(200).json(`the server is ready`)
