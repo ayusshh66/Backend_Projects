@@ -1,0 +1,16 @@
+services:
+  postgresTodo:
+    image: postgres
+    container_name: postgresTodo
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: postgresTodo
+    volumes:
+      - postgresTodo_data:/var/lib/postgresql
+
+volumes:
+  postgresTodo_data:

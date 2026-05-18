@@ -34,17 +34,17 @@ function ChatRoom({ setUserName, userName }) {
 
   return (
     <div className='w-full h-screen bg-neutral-100 flex flex-col max-w-3xl mx-auto shadow-xl'>
-      <div className='bg-neutral-400 py-4 px-4 flex gap-4 items-center'>
-        <div className='font-semibold text-sm'>
-          Hi! <span className='text-blue-900'>{userName}</span> enter room Id to chat
+      <div className='bg-neutral-400 py-4 px-4 flex gap-4 items-center justify-center'>
+        <div className='font-semibold text-md'>
+          Hi! <span className='text-indigo-700'>{userName}</span> enter room Id to chat
         </div>
         <input
           placeholder='Room Id'
-          className='bg-neutral-200 text-neutral-600 pl-3 outline-none rounded-3xl py-1 w-20'
+          className='bg-neutral-200 text-neutral-600 pl-3 outline-none rounded-3xl py-1 shadow-2xl shadow-neutral-700 '
           onChange={(e) => setRoom(e.target.value)}
         />
         <button
-          className='bg-neutral-600 px-4 rounded-3xl text-neutral-100 cursor-pointer py-1'
+          className='bg-neutral-600 px-4 rounded-3xl text-neutral-100 cursor-pointer py-1 -ml-15 hover:scale-105 active:scale-95 '
           onClick={joinRoom}
         >Join</button>
       </div>
@@ -72,7 +72,7 @@ function ChatRoom({ setUserName, userName }) {
             onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
           />
           <button
-            className='bg-neutral-600 px-4 rounded-3xl text-neutral-100 cursor-pointer py-2'
+            className='bg-neutral-600 px-4 rounded-3xl text-neutral-100 cursor-pointer py-2 hover:scale-105 active:scale-95'
             onClick={sendMessage}
           >Send</button>
         </div>

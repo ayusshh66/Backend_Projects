@@ -15,7 +15,7 @@ function Home({setUserName}) {
               <div className='flex flex-row justify-center items-center h-full'>
                 <div className='bg-neutral-100 h-12 rounded-3xl text-black shadow-xs flex '>
                   <input placeholder='Enter User Name' className='outline-none text-neutral-600 text-lg px-4' onChange={(e) => setUserName(e.target.value)}/>
-                  <button className='bg-neutral-600 px-4 rounded-3xl text-neutral-100 cursor-pointer' onClick={redirectChatRoom}>Join</button>
+                  <button className='bg-neutral-600 px-4 rounded-3xl text-neutral-100 cursor-pointer hover:scale-105 active:scale-95' onClick={redirectChatRoom}>Join</button>
                 </div>
               </div>
           </div>
