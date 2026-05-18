@@ -63,4 +63,16 @@ router.patch('/:id', async(req,res) => {
     return res.status(200).json({status : "successful", result});
 })
 
+router.delete('/:id', async(req,res) => {
+    const {id} = req.params;
+
+    const [data] = await db.delete(todoTable).where(eq(todoTable.id,id)).returning({id:todoTable.id, description:todoTable.description, completed:todoTable.completed,})
+
+    if(!data){
+        return res.status(401).json({message : `either this todo already deleted or not exists`})
+    }
+
+    return res.status(201).json({status: `deleted`, data})
+})
+
 export default router;
