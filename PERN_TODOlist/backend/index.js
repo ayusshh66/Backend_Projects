@@ -8,7 +8,7 @@ const PORT = process.env.PORT ?? 8000;
 app.use(cors())
 app.use(express.json())
 
-app.use('/', todoRouter)
+app.use('/todos', todoRouter)
 
 app.listen(PORT, () => {
     return console.log(`the server is up and running at ${PORT}`)
