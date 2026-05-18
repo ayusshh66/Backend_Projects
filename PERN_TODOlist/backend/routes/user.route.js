@@ -26,6 +26,26 @@ router.get('/',async(req,res) => {
     return res.status(200).json(data);
 })
 
+router.get('/:id', async(req,res) => {
+    const {id} = req.params;
+
+    if(!id){
+        return res.status(400).json({error : `Provide Id`})
+    }
+
+    
+
+    const [data] = await db.select().from(todoTable).where(eq(todoTable.id,id));
+
+    if (!data) {
+        return res.status(404).json({
+            error: "There is no todo with this id"
+        });
+    }
+
+    return res.status(200).json(data);
+})
+
 
 
 export default router;
