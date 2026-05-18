@@ -46,6 +46,21 @@ router.get('/:id', async(req,res) => {
     return res.status(200).json(data);
 })
 
+router.patch('/:id', async(req,res) => {
+    const {id} = req.params;
+    const {description, completed} = req.body;
 
+    if(!id){
+        return res.status(400).json({error : `Provide Id`})
+    }
+
+    const [result] = await db.update(todoTable).set({description, completed}).where(eq(todoTable.id,id)).returning();
+
+    if(!result){
+        return res.status(400).json({error : `todo not found`})
+    }
+
+    return res.status(200).json({status : "successful", result});
+})
 
 export default router;
