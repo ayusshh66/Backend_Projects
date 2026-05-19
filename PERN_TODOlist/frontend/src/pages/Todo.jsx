@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import axios from 'axios'
 import {useState} from 'react'
+import {MdOutlineDone} from 'react-icons/md'
 
 function Todo({user}) {
   const [description, setDescription] = useState('');
@@ -39,8 +40,8 @@ function Todo({user}) {
     <>
     <div className='body w-full h-full bg-gradient-to-b from-white via-pink-200 to-pink-100 selection:bg-pink-200'>
             <div className='flex justify-center items-center h-screen w-xl mx-auto'>
-                <div className='container bg-pink-300 h-90 rounded-2xl shadow-2xl flex flex-col  items-center gap-6 '>
-                    <div className='font-semibold text-xl text-pink-600 mt-15'><span className='text-pink-50 border-b-2 '>{user}</span>  What is in you mind?</div>
+                <div className='container bg-pink-300 h-90 rounded-2xl shadow-2xl flex flex-col  items-center gap-6 p-4 overflow-y-auto  '>
+                    <div className='font-semibold text-xl text-pink-600 '><span className='text-pink-50 border-b-2 '>{user}</span>  What is in you mind?</div>
                     <form onSubmit={onSubmitHandle}>
                       <div>
                         <input placeholder='Todo' className='h-10 w-sm bg-pink-100 rounded-lg p-4 text-neutral-600 outline-none border-1 border-pink-500'
@@ -59,12 +60,20 @@ function Todo({user}) {
                         </div>
                       ) : (
                        <>
-                       <div>
+                       <div className='flex flex-col gap-4 -ml-20'>
                           {todos.map((todo) => {
                              return (
-                               <div key={todo.id}>
+                               <>
+                               <div key={todo.id} className='flex flex-col gap-4'>
+                                <div  className='flex gap-4'>
+                                  <button className={`h-6 w-6 flex justify-center items-center rounded-full cursor-pointer border-2 border-white 
+                                     ${todo.completed?"bg-green-500 border-green-500":"border-gray-300 hover:border-blue-500 bg-pink-50"}`}>
+                                      {todo.completed && <MdOutlineDone size={16}/>}
+                                     </button>
                                   <span>{todo.description}</span>
-                              </div>
+                                </div>
+                               </div>
+                               </>
                              )
                           })}
                        </div>
