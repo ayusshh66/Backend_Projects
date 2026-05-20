@@ -21,6 +21,29 @@ function Todo({user}) {
     }
   }
 
+  const updateTodo = async(id) => {
+    try {
+      await axios.patch(`http://localhost:8000/todos/${id}`, {
+        description : editText,
+      })
+      
+      setEditText('');
+      setEditTodo(null);
+      getTodos();
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  const deleteTodo = async(id) => {
+    try {
+      await axios.delete(`http://localhost:8000/todos/${id}`)
+      setTodos(todos.filter((todo) => todo.id !== id));
+    } catch (error) {
+      console.error(error.message)
+    }
+  }
+
   useEffect(() => {
     getTodos();
   }, []);
@@ -77,7 +100,7 @@ function Todo({user}) {
                                       value={editText} onChange={(e) => setEditText(e.target.value)} />
                                   </div>
                                   <div className='flex ml-3 gap-4'>
-                                    <button className='cursor-pointer hover:scale-125 active:scale-95 duration-200'><MdOutlineDone/></button>
+                                    <button className='cursor-pointer hover:scale-125 active:scale-95 duration-200' onClick={() => updateTodo(todo.id)}><MdOutlineDone/></button>
                                     <button className='cursor-pointer hover:scale-125 active:scale-95 transition-all duration-200' onClick={() => setEditTodo(null)}><IoClose/></button>
                                   </div>
                                   </div>
@@ -96,7 +119,7 @@ function Todo({user}) {
                                              setEditTodo(todo.id)
                                       return setEditText(todo.description)
                                     }}/>
-                                    <FaTrash className='cursor-pointer hover:scale-125 active:scale-95 duration-200'/>
+                                    <FaTrash onClick={() => deleteTodo(todo.id)} className='cursor-pointer hover:scale-125 active:scale-95 duration-200'/>
                                   </div>
                                 </div>
                                   </div>
