@@ -44,6 +44,20 @@ function Todo({user}) {
     }
   }
 
+  const toggleComplete = async(id) => {
+    try {
+      const update = todos.find((todo) => todo.id ===  id)
+      await axios.patch(`http://localhost:8000/todos/${id}`,{
+        description : update.description,
+        completed : !update.completed,
+      });
+      setTodos(todos.map((todo) => todo.id===id ? {...todo,completed : !todo.completed}:todo));
+      getTodos();
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
   useEffect(() => {
     getTodos();
   }, []);
@@ -109,7 +123,8 @@ function Todo({user}) {
                                   <>
                                   <div>
                                     <div  className='flex gap-4'>
-                                  <button className={`h-6 w-6 flex justify-center items-center rounded-full cursor-pointer border-2 border-white hover:scale-125 active:scale-95 duration-200
+                                  <button onClick={() => toggleComplete(todo.id)}
+                                  className={`h-6 w-6 flex justify-center items-center rounded-full cursor-pointer border-2 border-white hover:scale-125 active:scale-95 duration-200
                                      ${todo.completed?"bg-green-500 border-green-500":"border-gray-300 hover:border-blue-500 bg-pink-50"}`}>
                                       {todo.completed && <MdOutlineDone size={16}/>}
                                      </button>
