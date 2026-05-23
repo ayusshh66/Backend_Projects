@@ -125,7 +125,7 @@ function Todo({ user }) {
 
             <div className='text-black'>
               {todos.length === 0 ? (
-                <div>
+                <div className='font-semibold text-2xl mt-50 text-pink-50'>
                   No Todo created!
                 </div>
               ) : (
