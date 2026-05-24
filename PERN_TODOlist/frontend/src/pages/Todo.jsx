@@ -4,13 +4,69 @@ import { useState } from 'react'
 import { MdModeEditOutline, MdOutlineDone } from 'react-icons/md'
 import { FaTrash } from 'react-icons/fa6'
 import { IoClose } from 'react-icons/io5'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion'
 
 function Todo({ user }) {
   const [description, setDescription] = useState('');
   const [todos, setTodos] = useState([]);
   const [editTodo, setEditTodo] = useState(null);
   const [editText, setEditText] = useState("");
+
+  const [cursorVariant, setCursorVariant] = useState('default');
+  const cursorX = useMotionValue(-100);
+  const cursorY = useMotionValue(-100);
+  const springX = useSpring(cursorX, { stiffness: 500, damping: 35 });
+  const springY = useSpring(cursorY, { stiffness: 500, damping: 35 });
+
+  const dotX = useSpring(cursorX, { stiffness: 1000, damping: 50 });
+  const dotY = useSpring(cursorY, { stiffness: 1000, damping: 50 });
+
+  useEffect(() => {
+    const moveCursor = (e) => {
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
+    };
+    window.addEventListener('mousemove', moveCursor);
+    return () => window.removeEventListener('mousemove', moveCursor);
+  }, []);
+
+  const cursorVariants  = {
+    default: {
+      width: 36,
+      height: 36,
+      x: '-50%',
+      y: '-50%',
+      backgroundColor: 'rgba(236, 72, 153, 0.15)',
+      border: '2px solid rgba(236, 72, 153, 0.6)',
+      mixBlendMode: 'normal',
+    },
+    hover: {
+      width: 56,
+      height: 56,
+      x: '-50%',
+      y: '-50%',
+      backgroundColor: 'rgba(236, 72, 153, 0.25)',
+      border: '2px solid rgba(236, 72, 153, 1)',
+      mixBlendMode: 'normal',
+    },
+    click: {
+      width: 24,
+      height: 24,
+      x: '-50%',
+      y: '-50%',
+      backgroundColor: 'rgba(236, 72, 153, 0.5)',
+      border: '2px solid rgba(236, 72, 153, 1)',
+    },
+    text: {
+      width: 4,
+      height: 32,
+      x: '-50%',
+      y: '-50%',
+      borderRadius: '2px',
+      backgroundColor: 'rgba(236, 72, 153, 0.8)',
+      border: 'none',
+    },
+  }
 
   const getTodos = async () => {
     try {
@@ -82,6 +138,38 @@ function Todo({ user }) {
 
   return (
     <>
+          <style>{`* { cursor: none !important; }`}</style>
+
+          <motion.div
+        style={{
+          position: 'fixed',
+          top: springY,
+          left: springX,
+          borderRadius: '50%',
+          pointerEvents: 'none',
+          zIndex: 9999,
+          transition: 'width 0.2s, height 0.2s, background-color 0.2s',
+        }}
+        variants={cursorVariants}
+        animate={cursorVariant}
+      />
+
+      <motion.div
+        style={{
+          position: 'fixed',
+          top: dotY,
+          left: dotX,
+          width: 6,
+          height: 6,
+          borderRadius: '50%',
+          backgroundColor: '#ec4899',
+          transform: 'translate(-50%, -50%)',
+          pointerEvents: 'none',
+          zIndex: 10000,
+        }}
+      />
+
+
       <div className='body w-full h-full bg-gradient-to-b from-white via-pink-200 to-pink-100 selection:bg-pink-200'>
         <div className='flex justify-center items-center h-screen w-xl mx-auto'>
 
